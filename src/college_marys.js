@@ -26,7 +26,7 @@ var FSHADER_SOURCE =
     'precision highp float;\n' +
     '#endif\n' +
     'uniform sampler2D u_Sampler;\n' +
-    'uniform vec3 u_LightColor;\n' + // for directional coming from the sun
+    'uniform vec3 u_LightColor;\n' +
     'uniform vec3 u_AmbientLight;\n' +
     'uniform vec3 u_LightDirection;\n' +
     'uniform bool u_isTextured;\n' +
@@ -59,6 +59,7 @@ var g_xAngle = 0.0;    // The rotation x angle (degrees)
 var g_yAngle = 0.0;    // The rotation y angle (degrees)
 
 let currentTranslate = 0.0;
+let currentRotate = 0.0;
 
 let textureBrick;
 let textureGrass;
@@ -67,10 +68,6 @@ let texturePavement;
 function main() {
     let canvas = document.getElementById('webgl');
     let gl = getWebGLContext(canvas);
-    if (!gl) {
-        console.log('Failed to get the rendering context for WebGL');
-        return;
-    }
 
     if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
         console.log('Failed to intialize shaders.');
@@ -92,11 +89,6 @@ function main() {
 
     let u_isTextured = gl.getUniformLocation(gl.program, 'u_isTextured');
     let u_Sampler = gl.getUniformLocation(gl.program, 'u_Sampler');
-
-    if (!u_ModelMatrix || !u_ViewMatrix || !u_NormalMatrix || !u_ProjMatrix || !u_LightColor || !u_LightDirection || !u_isTextured || !u_AmbientLight || !u_Sampler) {
-        console.log('Failed to Get the storage locations of u_ModelMatrix, u_ViewMatrix, and/or u_ProjMatrix');
-        return;
-    }
 
     gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
     gl.uniform3f(u_AmbientLight, 0.3, 0.3, 0.3);
@@ -142,6 +134,7 @@ function loadTexture(gl, url) {
     const texture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, texture);
 
+    //create placeholder single pixel texture while the actual texture loads
     const level = 0;
     const internalFormat = gl.RGBA;
     const width = 1;
@@ -170,7 +163,6 @@ function loadTexture(gl, url) {
         }
     };
     image.src = url;
-    console.log(image);
     return texture;
 }
 
@@ -186,18 +178,13 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isTextured, u_Sampler, deltaT
 
     gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
 
-    // Rotate, and then translate
-    modelMatrix.setTranslate(0, 0, 0);  // Translation (No translation is supported here)
+    modelMatrix.setTranslate(0, 0, 0);
     modelMatrix.rotate(g_yAngle, 0, 1, 0); // Rotate along y axis
     modelMatrix.rotate(g_xAngle, 1, 0, 0); // Rotate along x axis
 
     gl.uniform1i(u_isTextured, true);
 
     let nCube = initCubeVertexBuffers(gl, 0.6, 0.3, 0.1);
-    if (nCube < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
 
     if (u_isTextured) {
         gl.activeTexture(gl.TEXTURE0);
@@ -267,10 +254,6 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isTextured, u_Sampler, deltaT
     modelMatrix = popMatrix();
 
     nCube = initCubeVertexBuffers(gl, 0.5, 0.5, 0.5);
-    if (nCube < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
 
     if (u_isTextured) {
         gl.activeTexture(gl.TEXTURE1);
@@ -345,10 +328,6 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isTextured, u_Sampler, deltaT
     modelMatrix = popMatrix();
 
     nCube = initCubeVertexBuffers(gl, 0.2, 0.4, 0.2);
-    if (nCube < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
 
     if (u_isTextured) {
         gl.activeTexture(gl.TEXTURE2);
@@ -414,10 +393,6 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isTextured, u_Sampler, deltaT
     modelMatrix = popMatrix();
 
     nCube = initCubeVertexBuffers(gl, 0.2, 0.2, 0.2);
-    if (nCube < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
 
     gl.uniform1i(u_isTextured, false);
 
@@ -429,10 +404,6 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isTextured, u_Sampler, deltaT
     modelMatrix = popMatrix();
 
     let nTriangle = initTriangleVertexBuffers(gl, 0.4, 0.4, 0.4);
-    if (nTriangle < 0) {
-        console.log('Failed to set the triangle vertex information');
-        return;
-    }
 
     //front roof
     pushMatrix(modelMatrix);
@@ -452,10 +423,6 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isTextured, u_Sampler, deltaT
     modelMatrix = popMatrix();
 
     nTriangle = initTriangleVertexBuffers(gl, 0.4, 0.6, 0.4);
-    if (nTriangle < 0) {
-        console.log('Failed to set the triangle vertex information');
-        return;
-    }
 
     //side roofs
     pushMatrix(modelMatrix);
@@ -485,10 +452,6 @@ function draw(gl, u_ModelMatrix, u_NormalMatrix, u_isTextured, u_Sampler, deltaT
     drawCar(gl, u_ModelMatrix, u_NormalMatrix, deltaTime);
 
     nCube = initCubeVertexBuffers(gl, 0.25, 0.25, 0.25);
-    if (nCube < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
 
     //street lamp
     pushMatrix(modelMatrix);
@@ -508,15 +471,10 @@ function drawCar(gl, u_ModelMatrix, u_NormalMatrix, deltaTime) {
     /* Make a car */
 
     nCube = initCubeVertexBuffers(gl, 0.8, 0.8, 0.8);
-    if (nCube < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
     //car body
     pushMatrix(modelMatrix);
     modelMatrix.translate(currentTranslate, 0, 0);
 
-    modelMatrix.scale(1, 1, 1);
     modelMatrix.translate(-5.38, -0.4, 1.4);
     modelMatrix.scale(1.1, 0.15, 0.5);
     drawShape(gl, u_ModelMatrix, u_NormalMatrix, nCube);
@@ -525,10 +483,6 @@ function drawCar(gl, u_ModelMatrix, u_NormalMatrix, deltaTime) {
     drawShape(gl, u_ModelMatrix, u_NormalMatrix, nCube);
 
     nCube = initCubeVertexBuffers(gl, 0.5, 0.1, 0.1);
-    if (nCube < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
 
     //rear lights
     modelMatrix.translate(-1.95, -0.8, -0.34);
@@ -539,10 +493,6 @@ function drawCar(gl, u_ModelMatrix, u_NormalMatrix, deltaTime) {
     drawShape(gl, u_ModelMatrix, u_NormalMatrix, nCube);
 
     nCube = initCubeVertexBuffers(gl, 1, 1, 1);
-    if (nCube < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
 
     //headlights
     modelMatrix.translate(100.5, 0, -6.2);
@@ -553,10 +503,6 @@ function drawCar(gl, u_ModelMatrix, u_NormalMatrix, deltaTime) {
     drawShape(gl, u_ModelMatrix, u_NormalMatrix, nCube);
 
     let nTriPrism = initTriPrismVertexBuffers(gl, 0.8, 0.8, 0.8);
-    if (nTriPrism < 0) {
-        console.log('Failed to set the cube vertex information');
-        return;
-    }
 
     //rear and front windshield
     modelMatrix.translate(-82.4, 7.84, -3.11);
@@ -572,15 +518,22 @@ function drawCar(gl, u_ModelMatrix, u_NormalMatrix, deltaTime) {
     modelMatrix.translate(-0.45, -1.45, 0.5);
     modelMatrix.scale(0.1, 0.49, 0.3);
     modelMatrix.rotate(90, 0, 0, 1);
+    modelMatrix.rotate(-currentRotate, 0, 1, 0);
     drawCylinder(gl, u_ModelMatrix, u_NormalMatrix, 0.3, 0.3, 0.3, 20);
+    modelMatrix.rotate(currentRotate, 0, 1, 0);
     modelMatrix.translate(0, 0, -10);
     modelMatrix.scale(1, 1, 1);
+    modelMatrix.rotate(-currentRotate, 0, 1, 0);
     drawCylinder(gl, u_ModelMatrix, u_NormalMatrix, 0.3, 0.3, 0.3, 20);
+    modelMatrix.rotate(currentRotate, 0, 1, 0);
     modelMatrix.translate(0, -9.9, 0);
     modelMatrix.scale(1, 1, 1);
+    modelMatrix.rotate(-currentRotate, 0, 1, 0);
     drawCylinder(gl, u_ModelMatrix, u_NormalMatrix, 0.3, 0.3, 0.3, 20);
+    modelMatrix.rotate(currentRotate, 0, 1, 0);
     modelMatrix.translate(0, 0, 10);
     modelMatrix.scale(1, 1, 1);
+    modelMatrix.rotate(-currentRotate, 0, 1, 0);
     drawCylinder(gl, u_ModelMatrix, u_NormalMatrix, 0.3, 0.3, 0.3, 20);
 
     modelMatrix = popMatrix();
@@ -590,6 +543,10 @@ function drawCar(gl, u_ModelMatrix, u_NormalMatrix, deltaTime) {
     }
     else if (currentTranslate >= 0) {
         currentTranslate = 0;
+    }
+    currentRotate += deltaTime * 46.0;
+    if (currentRotate <= 360) {
+        currentRotate -= 360;
     }
 }
 

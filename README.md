@@ -6,7 +6,8 @@ the building, environment, road, a street light and the car with the car moving 
 
 The program is capable of loading textures and applying them to cuboids and can draw cuboids, 
 3D triangles, cylinders and 3D right angled triangles. Both directional and ambient lighting is
-present and the direction and color of said light can be changed in the source.
+present and the direction and color of said light can be changed in the source. The camera view
+angle and position can also be changed in the paramaters of setLookAt.
 
 The model is hosted through a basic CORS enabled express server and can be started typing
 'node index.js' on any command console that is on this directory. You can then use a web

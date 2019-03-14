@@ -10,48 +10,41 @@ function popMatrix() { // Retrieve the matrix from the array
 
 function initCubeVertexBuffers(gl, r, g, b) {
     // Create a cube
-    //    v6----- v5
-    //   /|      /|
-    //  v1------v0|
-    //  | |     | |
-    //  | |v7---|-|v4
-    //  |/      |/
-    //  v2------v3
     let vertices = new Float32Array([   // Coordinates
-        0.5, 0.5, 0.5,  -0.5, 0.5, 0.5,  -0.5,-0.5, 0.5,   0.5,-0.5, 0.5, // v0-v1-v2-v3 front
-        0.5, 0.5, 0.5,   0.5,-0.5, 0.5,   0.5,-0.5,-0.5,   0.5, 0.5,-0.5, // v0-v3-v4-v5 right
-        0.5, 0.5, 0.5,   0.5, 0.5,-0.5,  -0.5, 0.5,-0.5,  -0.5, 0.5, 0.5, // v0-v5-v6-v1 up
-       -0.5, 0.5, 0.5,  -0.5, 0.5,-0.5,  -0.5,-0.5,-0.5,  -0.5,-0.5, 0.5, // v1-v6-v7-v2 left
-       -0.5,-0.5,-0.5,   0.5,-0.5,-0.5,   0.5,-0.5, 0.5,  -0.5,-0.5, 0.5, // v7-v4-v3-v2 down
-        0.5,-0.5,-0.5,  -0.5,-0.5,-0.5,  -0.5, 0.5,-0.5,   0.5, 0.5,-0.5  // v4-v7-v6-v5 back
+        0.5, 0.5, 0.5,  -0.5, 0.5, 0.5,  -0.5,-0.5, 0.5,   0.5,-0.5, 0.5, // front
+        0.5, 0.5, 0.5,   0.5,-0.5, 0.5,   0.5,-0.5,-0.5,   0.5, 0.5,-0.5, // right
+        0.5, 0.5, 0.5,   0.5, 0.5,-0.5,  -0.5, 0.5,-0.5,  -0.5, 0.5, 0.5, // up
+       -0.5, 0.5, 0.5,  -0.5, 0.5,-0.5,  -0.5,-0.5,-0.5,  -0.5,-0.5, 0.5, // left
+       -0.5,-0.5,-0.5,   0.5,-0.5,-0.5,   0.5,-0.5, 0.5,  -0.5,-0.5, 0.5, // down
+        0.5,-0.5,-0.5,  -0.5,-0.5,-0.5,  -0.5, 0.5,-0.5,   0.5, 0.5,-0.5  // back
     ]);
 
 
     let colors = new Float32Array([
-        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // v0-v1-v2-v3 front
-        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // v0-v3-v4-v5 right
-        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // v0-v5-v6-v1 up
-        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // v1-v6-v7-v2 left
-        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // v7-v4-v3-v2 down
-        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // v4-v7-v6-v5 back
+        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // front
+        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // right
+        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // up
+        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // left
+        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // down
+        r, g, b,   r, g, b,   r, g, b,   r, g, b,     // back
     ]);
 
     let textureCoordinates = new Float32Array([
-        1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0, // v0-v1-v2-v3 front
-        0.0, 1.0,   0.0, 0.0,   1.0, 0.0,   1.0, 1.0, // v4-v7-v6-v5 back
-        1.0, 0.0,   1.0, 1.0,   0.0, 1.0,   0.0, 0.0, // v0-v5-v6-v1 up
-        1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0, // v7-v4-v3-v2 down
-        0.0, 0.0,   1.0, 0.0,   1.0, 1.0,   0.0, 1.0, // v0-v3-v4-v5 right
-        0.0, 0.0,   1.0, 0.0,   1.0, 1.0,   0.0, 1.0 // v1-v6-v7-v2 left
+        1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0, // front
+        0.0, 1.0,   0.0, 0.0,   1.0, 0.0,   1.0, 1.0, // back
+        1.0, 0.0,   1.0, 1.0,   0.0, 1.0,   0.0, 0.0, // up
+        1.0, 1.0,   0.0, 1.0,   0.0, 0.0,   1.0, 0.0, // down
+        0.0, 0.0,   1.0, 0.0,   1.0, 1.0,   0.0, 1.0, // right
+        0.0, 0.0,   1.0, 0.0,   1.0, 1.0,   0.0, 1.0 // left
     ]);
 
     let normals = new Float32Array([
-        0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,  // v0-v1-v2-v3 front
-        1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,  // v0-v3-v4-v5 right
-        0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,  // v0-v5-v6-v1 up
-       -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  // v1-v6-v7-v2 left
-        0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,  // v7-v4-v3-v2 down
-        0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0   // v4-v7-v6-v5 back
+        0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,   0.0, 0.0, 1.0,  // front
+        1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,   1.0, 0.0, 0.0,  // right
+        0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,   0.0, 1.0, 0.0,  // up
+       -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  -1.0, 0.0, 0.0,  // left
+        0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,  // down
+        0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0   // back
     ]);
 
 
@@ -213,6 +206,7 @@ function initCylinderVertexBuffers(gl, r, g, b, segments, isTop, isSide) {
     return indices.length;
 }
 
+//adds the vertex data for the top and bottom of the cylinder/polygon
 function addCirclePoints(vertices, indices, r, g, b, segments, isTop) {
     let y = 0;
     theta = ((Math.PI * 2) / segments);
@@ -233,6 +227,7 @@ function addCirclePoints(vertices, indices, r, g, b, segments, isTop) {
     }
 }
 
+//adds the vertex data for the sides of the cylinder/polygon
 function addCylinderPoints(vertices, indices, r, g, b, segments) {
     let y = 0;
     theta = ((Math.PI * 2) / segments);
@@ -319,6 +314,7 @@ function drawCylinderPart(gl, r, g, b, segments, isTop, isSide) {
 
     let n = initCylinderVertexBuffers(gl, r, g, b, segments, isTop, isSide);
 
+    //create buffer and bind attributes to it
     let vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vertexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, n, gl.STATIC_DRAW);
@@ -337,7 +333,7 @@ function drawCylinderPart(gl, r, g, b, segments, isTop, isSide) {
     gl.vertexAttribPointer(a_Normal, 3, gl.FLOAT, false, stride, normalOffset);
     gl.enableVertexAttribArray(a_Normal);
 
-    let colorOffset = (3 + 3 + 2) * 4;
+    let colorOffset = (3 + 2 + 3) * 4;
     a_Color = gl.getAttribLocation(gl.program, 'a_Color');
     gl.vertexAttribPointer(a_Color, 3, gl.FLOAT, false, stride, colorOffset);
     gl.enableVertexAttribArray(a_Color);
